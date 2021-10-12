@@ -1,257 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-	
+
 <head>
 	<meta charset="UTF-8">
-	<meta name ="viewport" content=
-	"width=device-width, initial-scale=1.0">
-
-	<title>PONG GAME</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content=
+		"width=device-width, initial-scale=1.0">
+	<title>
+		Build a Survey Form using HTML and CSS
+	</title>
 
 	<style>
-	*{
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-	}
 
-	body {
-		height: 100vh;
-		width: 100vw;
-		background-image: linear-gradient(to top, #ffda77, #ffa45b);
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.board {
-		height: 85vh;
-		width: 80vw;
-		background-image: linear-gradient(to right, #5c6e91, #839b97);
-		border-radius: 14px;
-	}
-
-	.ball {
-		height: 30px;
-		width: 30px;
-		border-radius: 50%;
-		position: fixed;
-		top: calc(50% - 15px);
-		left: calc(50% - 15px);
-	}
-
-	.ball_effect {
-		height: 100%;
-		width: 100%;
-		border-radius: 100px;
-		animation: spinBall 0.1s linear infinite;
-		box-shadow: inset 0 0 18px #fff, inset 6px 0 18px violet,
-		inset -6px 0 18px #0ff, inset 6px 0 30px violet,
-		inset -6px 0 30px #0ff, 0 0 18px #fff,
-		-4px 0 18px violet, 4px 0 18px #0ff;
-	}
-
-	@keyframes spinBall {
-		100% {
-		-webkit-transform: rotate(360deg);
-		transform: rotate(360deg);
+		/* Styling the Body element i.e. Color,
+		Font, Alignment */
+		body {
+			background-color: #05bec4;
+			font-family: Verdana;
+			text-align: center;
 		}
-	}
 
-	.paddle {
-		height: 100px;
-		width: 18px;
-		border-radius: 50%;
-		position: fixed;
-	}
+		/* Styling the Form (Color, Padding, Shadow) */
+		form {
+			background-color: #fff;
+			max-width: 500px;
+			margin: 50px auto;
+			padding: 30px 20px;
+			box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+		}
 
-	.paddle_1 {
-		top: calc(7.5vh + 55px);
-		left: calc(10vw + 30px);
-		box-shadow: inset 0 0 18px #fff,
-		inset -6px 0 18px #f3bad6,
-		inset 6px 0 18px #0ff, inset -6px 0 30px #f3bad6,
-		inset 6px 0 30px #0ff, 0 0 18px #fff,
-		4px 0 18px #f3bad6, -4px 0 18px #0ff;
-	}
+		/* Styling form-control Class */
+		.form-control {
+			text-align: left;
+			margin-bottom: 25px;
+		}
 
-	.paddle_2 {
-		top: calc(85vh + 7.5vh - 100px - 55px);
-		right: calc(10vw + 30px);
-		box-shadow: inset 0 0 18px #fff,
-		inset 6px 0 18px #f3bad6,
-		inset -6px 0 18px #0ff, inset 6px 0 30px #f3bad6,
-		inset -6px 0 30px #0ff,
-		0 0 18px #fff, -4px 0 18px #f3bad6, 4px 0 18px #0ff;
-	}
+		/* Styling form-control Label */
+		.form-control label {
+			display: block;
+			margin-bottom: 10px;
+		}
 
-	.player_1_score {
-		height: 50px;
-		width: 50px;
-		color: chartreuse;
-		position: fixed;
-		left: 30vw;
-		margin-top: 30px;
-	}
+		/* Styling form-control input,
+		select, textarea */
+		.form-control input,
+		.form-control select,
+		.form-control textarea {
+			border: 1px solid #777;
+			border-radius: 2px;
+			font-family: inherit;
+			padding: 10px;
+			display: block;
+			width: 95%;
+		}
 
-	.player_2_score {
-		height: 50px;
-		width: 50px;
-		color: chartreuse;
-		position: fixed;
-		left: 70vw;
-		margin-top: 30px;
-	}
+		/* Styling form-control Radio
+		button and Checkbox */
+		.form-control input[type="radio"],
+		.form-control input[type="checkbox"] {
+			display: inline-block;
+			width: auto;
+		}
 
-	.message {
-		position: fixed;
-		/* color: #48426d; */
-		height: 10vh;
-		width: 30vw;
-		color: #c9cbff;
-		left: 38vw;
-		margin: 30px auto auto auto;
-	}
+		/* Styling Button */
+		button {
+			background-color: #05bec4;
+			border: 1px solid #777;
+			border-radius: 2px;
+			font-family: inherit;
+			font-size: 21px;
+			display: block;
+			width: 100%;
+			margin-top: 50px;
+			margin-bottom: 20px;
+		}
 	</style>
 </head>
-	
+
 <body>
-<div class="board">
-	<div class='ball'>
-		<div class="ball_effect"></div>
-	</div>
-	<div class="paddle_1 paddle"></div>
-	<div class="paddle_2 paddle"></div>
-	<h1 class = "player_1_score">0</h1>
-	<h1 class="player_2_score">0</h1>
-	<h1 class="message">
-		Press Enter to Play Pong
-	</h1>
-</div>
-<script>
-	let gameState = 'start';
-	let paddle_1 = document.querySelector('.paddle_1');
-	let paddle_2 = document.querySelector('.paddle_2');
-	let board = document.querySelector('.board');
-	let initial_ball = document.querySelector('.ball');
-	let ball = document.querySelector('.ball');
-	let score_1 = document.querySelector('.player_1_score');
-	let score_2 = document.querySelector('.player_2_score');
-	let message = document.querySelector('.message');
-	let paddle_1_coord = paddle_1.getBoundingClientRect();
-	let paddle_2_coord = paddle_2.getBoundingClientRect();
-	let initial_ball_coord = ball.getBoundingClientRect();
-	let ball_coord = initial_ball_coord;
-	let board_coord = board.getBoundingClientRect();
-	let paddle_common =
-		document.querySelector('.paddle').getBoundingClientRect();
-	let dx = Math.floor(Math.random() * 4) + 3;
-	let dy = Math.floor(Math.random() * 4) + 3;
-	let dxd = Math.floor(Math.random() * 2);
-	let dyd = Math.floor(Math.random() * 2);
+	<h1>Basic Survey Form</h1>
 
-	document.addEventListener('keydown', (e) => {
-	if (e.key == 'Enter') {
-		gameState = gameState == 'start' ? 'play' : 'start';
-		if (gameState == 'play') {
-		message.innerHTML = 'Game Started';
-		message.style.left = 42 + 'vw';
-		requestAnimationFrame(() => {
-			dx = Math.floor(Math.random() * 4) + 3;
-			dy = Math.floor(Math.random() * 4) + 3;
-			dxd = Math.floor(Math.random() * 2);
-			dyd = Math.floor(Math.random() * 2);
-			moveBall(dx, dy, dxd, dyd);
-		});
-		}
-	}
-	if (gameState == 'play') {
-		if (e.key == 'w') {
-		paddle_1.style.top =
-			Math.max(
-			board_coord.top,
-			paddle_1_coord.top - window.innerHeight * 0.06
-			) + 'px';
-		paddle_1_coord = paddle_1.getBoundingClientRect();
-		}
-		if (e.key == 's') {
-		paddle_1.style.top =
-			Math.min(
-			board_coord.bottom - paddle_common.height,
-			paddle_1_coord.top + window.innerHeight * 0.06
-			) + 'px';
-		paddle_1_coord = paddle_1.getBoundingClientRect();
-		}
+	<!-- Create Form -->
+	<form id="form">
 
-		if (e.key == 'ArrowUp') {
-		paddle_2.style.top =
-			Math.max(
-			board_coord.top,
-			paddle_2_coord.top - window.innerHeight * 0.1
-			) + 'px';
-		paddle_2_coord = paddle_2.getBoundingClientRect();
-		}
-		if (e.key == 'ArrowDown') {
-		paddle_2.style.top =
-			Math.min(
-			board_coord.bottom - paddle_common.height,
-			paddle_2_coord.top + window.innerHeight * 0.1
-			) + 'px';
-		paddle_2_coord = paddle_2.getBoundingClientRect();
-		}
-	}
-	});
+		<!-- Details -->
+		<div class="form-control">
+			<label for="name" id="label-name">
+				Name
+			</label>
 
-	function moveBall(dx, dy, dxd, dyd) {
-	if (ball_coord.top <= board_coord.top) {
-		dyd = 1;
-	}
-	if (ball_coord.bottom >= board_coord.bottom) {
-		dyd = 0;
-	}
-	if (
-		ball_coord.left <= paddle_1_coord.right &&
-		ball_coord.top >= paddle_1_coord.top &&
-		ball_coord.bottom <= paddle_1_coord.bottom
-	) {
-		dxd = 1;
-		dx = Math.floor(Math.random() * 4) + 3;
-		dy = Math.floor(Math.random() * 4) + 3;
-	}
-	if (
-		ball_coord.right >= paddle_2_coord.left &&
-		ball_coord.top >= paddle_2_coord.top &&
-		ball_coord.bottom <= paddle_2_coord.bottom
-	) {
-		dxd = 0;
-		dx = Math.floor(Math.random() * 4) + 3;
-		dy = Math.floor(Math.random() * 4) + 3;
-	}
-	if (
-		ball_coord.left <= board_coord.left ||
-		ball_coord.right >= board_coord.right
-	) {
-		if (ball_coord.left <= board_coord.left) {
-		score_2.innerHTML = +score_2.innerHTML + 1;
-		} else {
-		score_1.innerHTML = +score_1.innerHTML + 1;
-		}
-		gameState = 'start';
+			<!-- Input Type Text -->
+			<input type="text"
+				id="name"
+				placeholder="Enter your name" />
+		</div>
 
-		ball_coord = initial_ball_coord;
-		ball.style = initial_ball.style;
-		message.innerHTML = 'Press Enter to Play Pong';
-		message.style.left = 38 + 'vw';
-		return;
-	}
-	ball.style.top = ball_coord.top + dy * (dyd == 0 ? -1 : 1) + 'px';
-	ball.style.left = ball_coord.left + dx * (dxd == 0 ? -1 : 1) + 'px';
-	ball_coord = ball.getBoundingClientRect();
-	requestAnimationFrame(() => {
-		moveBall(dx, dy, dxd, dyd);
-	});
-	}
-</script>
+		<div class="form-control">
+			<label for="email" id="label-email">
+				Email
+			</label>
+
+			<!-- Input Type Email-->
+			<input type="email"
+				id="email"
+				placeholder="Enter your email" />
+		</div>
+
+		<div class="form-control">
+			<label for="age" id="label-age">
+				Age
+			</label>
+
+			<!-- Input Type Text -->
+			<input type="text"
+				id="age"
+				placeholder="Enter your age" />
+		</div>
+
+		<div class="form-control">
+			<label for="role" id="label-role">
+				Which option best describes you?
+			</label>
+			
+			<!-- Dropdown options -->
+			<select name="role" id="role">
+				<option value="student">Student</option>
+				<option value="intern">Intern</option>
+				<option value="professional">
+					Professional
+				</option>
+				<option value="other">Other</option>
+			</select>
+		</div>
+
+		<div class="form-control">
+			<label>
+				Would you recommed GeeksforGeeks
+				to a friend?
+			</label>
+
+			<!-- Input Type Radio Button -->
+			<label for="recommed-1">
+				<input type="radio"
+					id="recommed-1"
+					name="recommed">Yes</input>
+			</label>
+			<label for="recommed-2">
+				<input type="radio"
+					id="recommed-2"
+					name="recommed">No</input>
+			</label>
+			<label for="recommed-3">
+				<input type="radio"
+					id="recommed-3"
+					name="recommed">Maybe</input>
+			</label>
+		</div>
+
+		<div class="form-control">
+			<label>Languages and Frameworks known
+				<small>(Check all that apply)</small>
+			</label>
+			<!-- Input Type Checkbox -->
+			<label for="inp-1">
+				<input type="checkbox"
+					name="inp">C</input></label>
+			<label for="inp-2">
+				<input type="checkbox"
+					name="inp">C++</input></label>
+			<label for="inp-3">
+				<input type="checkbox"
+					name="inp">C#</input></label>
+			<label for="inp-4">
+				<input type="checkbox"
+					name="inp">Java</input></label>
+			<label for="inp-5">
+				<input type="checkbox"
+					name="inp">Python</input></label>
+			<label for="inp-6">
+				<input type="checkbox"
+					name="inp">JavaScript</input></label>
+			<label for="inp-7">
+				<input type="checkbox"
+					name="inp">React</input></label>
+			<label for="inp-7">
+				<input type="checkbox"
+					name="inp">Angular</input></label>
+			<label for="inp-7">
+				<input type="checkbox"
+					name="inp">Django</input></label>
+			<label for="inp-7">
+				<input type="checkbox"
+					name="inp">Spring</input></label>
+		</div>
+
+		<div class="form-control">
+			<label for="comment">
+				Any comments or suggestions
+			</label>
+
+			<!-- multi-line text input control -->
+			<textarea name="comment" id="comment"
+				placeholder="Enter your comment here">
+			</textarea>
+		</div>
+
+		<!-- Multi-line Text Input Control -->
+		<button type="submit" value="submit">
+			Submit
+		</button>
+	</form>
 </body>
-	
+
 </html>
+
